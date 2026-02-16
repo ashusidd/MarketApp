@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 // APNA RENDER URL YAHAN DALO
-const API = "https://marketapp-y0cq.onrender.com/";
+const API = "https://marketapp-y0cq.onrender.com/api";
 
 function App() {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || null);

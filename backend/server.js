@@ -9,13 +9,12 @@ app.use(cors());
 // MONGODB CONNECTION (Apna URL yahan dalo)
 // --- DATABASE CONNECTION ---
 // Kisi bhi purani URL string ko hata kar ye likh do
-const mongoURI = process.env.MONGO_URL;
+// server.js mein jahan mongoose.connect hai
+const mongoURI = process.env.MONGO_URL || "mongodb+srv://ashu:ashubhai@ashraf.yrroemv.mongodb.net/MarketApp?retryWrites=true&w=majority";
 
 mongoose.connect(mongoURI)
     .then(() => console.log("Database Connected!"))
-    .catch(err => {
-        console.log("DB Error Details:", err.message); // Isse detail mein galti pata chalegi
-    });
+    .catch(err => console.log("DB Error Details:", err.message));
 
 // --- SCHEMAS ---
 const userSchema = new mongoose.Schema({ name: String, mobile: { type: String, unique: true } });

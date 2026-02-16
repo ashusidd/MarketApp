@@ -8,12 +8,14 @@ app.use(cors());
 
 // MONGODB CONNECTION (Apna URL yahan dalo)
 // --- DATABASE CONNECTION ---
-// Ye line apne aap Render ke environment variables se URL utha legi
-const MONGO_URL = process.env.MONGO_URL || "hoohoo";
+// Kisi bhi purani URL string ko hata kar ye likh do
+const mongoURI = process.env.MONGO_URL;
 
-mongoose.connect(MONGO_URL)
+mongoose.connect(mongoURI)
     .then(() => console.log("Database Connected!"))
-    .catch(err => console.log("DB Error:", err));
+    .catch(err => {
+        console.log("DB Error Details:", err.message); // Isse detail mein galti pata chalegi
+    });
 
 // --- SCHEMAS ---
 const userSchema = new mongoose.Schema({ name: String, mobile: { type: String, unique: true } });

@@ -10,6 +10,15 @@ function App() {
   const [group, setGroup] = useState(JSON.parse(localStorage.getItem('group')) || null);
   const [expenses, setExpenses] = useState([]);
   const [formData, setFormData] = useState({ name: '', mobile: '', isSignup: false, gName: '', code: '', item: '', price: '' });
+  // Expenses list ke upar ye calculation daal do
+  const totalAmount = expenses.reduce((sum, exp) => sum + exp.price, 0);
+  const perPerson = totalAmount / (group.members.length || 1);
+
+  // UI mein dikhane ke liye:
+  <div style={summaryBox}>
+    <p>Total Group Kharcha: <b>₹{totalAmount}</b></p>
+    <p>Per Head: <b>₹{perPerson.toFixed(2)}</b></p>
+  </div>
 
   // Fetch Expenses
   const fetchExpenses = async (gid) => {

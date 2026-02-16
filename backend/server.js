@@ -55,6 +55,15 @@ app.post('/api/auth', async (req, res) => {
         res.status(500).send("Server Error");
     }
 });
+// Kisi kharche (expense) ko delete karne ka route
+app.delete('/api/expenses/:id', async (req, res) => {
+    try {
+        await Expense.findByIdAndDelete(req.params.id);
+        res.json({ message: "Expense deleted!" });
+    } catch (err) {
+        res.status(500).send("Delete fail ho gaya");
+    }
+});
 // 2. Create Group
 app.post('/api/create-group', async (req, res) => {
     const { name, mobile } = req.body;

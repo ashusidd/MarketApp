@@ -36,19 +36,25 @@ const Group = mongoose.model('Group', groupSchema);
 const Expense = mongoose.model('Expense', expenseSchema);
 
 // --- ROUTES ---
-
 // 1. Auth (Login/Signup)
 app.post('/api/auth', async (req, res) => {
     const { name, mobile, isSignup } = req.body;
-    if (isSignup) {
-        const newUser = new User({ name, mobile });
-        await newUser.save();
-        return res.json(newUser);
+    try {
+        if (isSignup) {
+            const newUser = new User({ name, mobile });
+            await newUser.save();
+            return res.json(newUser);
+        }
+        const user = await User.findOne({ mobile });
+        if (user) {
+            res.json(user);
+        } else {
+            res.status(404).send("User not found");
+        }
+    } catch (err) {
+        res.status(500).send("Server Error");
     }
-    const user = await User.findOne({ mobile });
-    user ? res.json(user) : res.status(404).send("User not found");
 });
-
 // 2. Create Group
 app.post('/api/create-group', async (req, res) => {
     const { name, mobile } = req.body;

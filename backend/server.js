@@ -39,17 +39,25 @@ const Expense = mongoose.model('Expense', expenseSchema);
 // 1. Auth (Login/Signup)
 app.post('/api/auth', async (req, res) => {
     const { name, mobile, isSignup } = req.body;
+
     try {
         if (isSignup) {
+            // Check agar mobile ya name pehle se hai
+            const existingUser = await User.findOne({ $or: [{ mobile }, { name }] });
+            if (existingUser) {
+                return res.status(400).send("Naam ya Mobile pehle se register hai!");
+            }
             const newUser = new User({ name, mobile });
             await newUser.save();
-            return res.json(newUser);
-        }
-        const user = await User.findOne({ mobile });
-        if (user) {
-            res.json(user);
+            return res.json({ user: newUser, group: null });
         } else {
-            res.status(404).send("User not found");
+            // Login Logic
+            const user = await User.findOne({ mobile });
+            if (!user) return res.status(404).send("Mobile number nahi mila. Signup karein!");
+
+            // Purana group dhundna jo user ne join kiya tha
+            const group = await Group.findOne({ members: { $elemMatch: { mobile: user.mobile } } });
+            res.json({ user, group });
         }
     } catch (err) {
         res.status(500).send("Server Error");

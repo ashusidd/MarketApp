@@ -28,20 +28,25 @@ function App() {
     try {
       const res = await axios.post(`${API}/auth`, { ...formData });
 
-      // Response mein user aur group dono milenge
-      setUser(res.data.user);
-      localStorage.setItem('user', JSON.stringify(res.data.user));
+      // 1. User save karo
+      const userData = res.data.user;
+      setUser(userData);
+      localStorage.setItem('user', JSON.stringify(userData));
 
+      // 2. Agar purana group mila hai, toh usey bhi save aur set karo
       if (res.data.group) {
         setGroup(res.data.group);
         localStorage.setItem('group', JSON.stringify(res.data.group));
+        alert("Wapas swagat hai! Aapka purana group mil gaya.");
+      } else {
+        setGroup(null);
+        localStorage.removeItem('group');
+        alert(formData.isSignup ? "Signup Successful!" : "Login Successful! Ab group join karein.");
       }
-      alert(formData.isSignup ? "Signup Successful!" : "Login Successful!");
     } catch (err) {
-      alert(err.response?.data || "Kuch galti hui!");
+      alert(err.response?.data || "Login fail ho gaya!");
     }
   };
-
   // Create/Join/Add Expense functions wahi rahenge jo pehle the...
   const createGroup = async () => {
     if (!formData.gName) return alert("Group name dalo!");

@@ -58,11 +58,14 @@ app.post('/api/auth', async (req, res) => {
 // Kisi kharche (expense) ko delete karne ka route
 app.delete('/api/expenses/:id', async (req, res) => {
     try {
+        const expense = await Expense.findById(req.params.id);
+        // Frontend se hum name bhejenge check karne ke liye
+        if (req.headers.user_name !== expense.boughtBy) {
+            return res.status(403).send("Aap sirf apna kharcha delete kar sakte hain!");
+        }
         await Expense.findByIdAndDelete(req.params.id);
-        res.json({ message: "Expense deleted!" });
-    } catch (err) {
-        res.status(500).send("Delete fail ho gaya");
-    }
+        res.json({ message: "Deleted!" });
+    } catch (err) { res.status(500).send("Error"); }
 });
 // 2. Create Group
 app.post('/api/create-group', async (req, res) => {
